@@ -15,7 +15,7 @@ vi script1.sh
 ```
 Script1 for Java,Jenkins,Docker
 
-``bash
+```bash
 #!/bin/bash
 sudo apt update -y
 wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
@@ -48,7 +48,7 @@ newgrp docker
 
 Run script by providing permissions
 
-``bash
+```bash
 sudo chmod 777 script1.sh
 sh script1.sh
 ```
