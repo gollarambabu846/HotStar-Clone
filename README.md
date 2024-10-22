@@ -1,6 +1,7 @@
 # DevSecOps With Docker Scout Hotstar Clone
 
 STEPS:
+
 1.execute s3-for-jenkins&eks_terraformcode in VSCODE
   This creates s3 bucket where stores .tfstate files of both jenkinsEC2 and EKS 
   
