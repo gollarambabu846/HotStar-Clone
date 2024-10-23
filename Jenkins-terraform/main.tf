@@ -59,7 +59,6 @@ resource "aws_instance" "ec2"{
     key_name = var.ec2-ssh
     vpc_security_group_ids = [ aws_security_group.ec2-sg.id ]
     iam_instance_profile = aws_iam_instance_profile.profile.name
-    user_data = templatefile("./install_jenkins.sh",{})
 
     root_block_device {
       volume_size = 30
