@@ -1,0 +1,83 @@
+pipeline {
+    agent any
+    tools{
+        jdk 'jdk17'
+        nodejs 'node16'
+    }
+    
+    environment{
+        SCANNER_HOME = tool 'sonar-scanner'
+    }
+
+    stages {
+        stage('Git checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Pavangowda73/HotStar-Clone.git'
+            }
+        }
+        stage('Sonarqube analysis') {
+            steps {
+                withSonarQubeEnv('sonar-server'){
+                    sh '''$SCANNER_HOME/bin/sonar-scanner  -Dsonar.projectName=hotstar \
+                          -Dsonar.projectKey=hotstar'''
+                }
+            }
+        }
+        stage('Quality gate') {
+            steps {
+                script{
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                }
+            }
+        }
+        stage('install dependency') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Dependency check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('docker-scout file system scan') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        sh 'docker-scout quickview fs://.'
+                        sh 'docker-scout cves fs://.'
+                    }
+                }
+            }
+        }
+        stage('docker BUILD,TAG,PUSH') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        sh 'docker build -t hotstar .'
+                        sh 'docker tag hotstar pavan73384/hotstar:latest'
+                        sh 'docker push pavan73384/hotstar:latest'
+                        
+                    }
+                }
+            }
+        }
+        stage('docker-scout image scan') {
+            steps {
+                script{
+                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                        sh 'docker-scout quickview pavan73384/hotstar:latest'
+                        sh 'docker-scout cves pavan73384/hotstar:latest'
+                        sh 'docker-scout recommendations pavan73384/hotstar:latest'
+                    }
+                }
+            }
+        }
+        stage('docker run image locally'){
+            steps{
+                sh 'docker run -d --name hotstar -p 3000:3000 pavan73384/hotstar:latest'
+            }
+        }
+    }
+}
