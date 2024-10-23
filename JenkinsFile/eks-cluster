@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Pavangowda73/HotStar-Clone.git'
+            }
+        }
+        stage('terraform init') {
+            steps {
+                dir('EKS_TERRAFORM') {
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage('terraform validate') {
+            steps {
+                dir('EKS_TERRAFORM') {
+                    sh 'terraform validate'
+                }
+            }
+        }
+        stage('terraform plan') {
+            steps {
+                dir('EKS_TERRAFORM') {
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('terraform apply/destroy') {
+            steps {
+                dir('EKS_TERRAFORM') {
+                    sh 'terraform ${action} --auto-approve'
+                }
+            }
+        }
+    }
+}
