@@ -96,3 +96,15 @@ sudo chmod 777 /var/run/docker.sock
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 ```
 
+ASSIGN permisssion
+
+```bash
+sudo chmod 777 /var/run/docker.sock
+```
+
+Before Adding pipeline install Docker Scout
+
+```bash
+docker login    #use credentials to login
+curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s -- -b /usr/local/bin
+```
