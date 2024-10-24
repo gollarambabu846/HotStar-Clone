@@ -75,7 +75,7 @@ curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 kubectl version --client
 #install Aws cli
-sudo apt-get update
+sudo apt-get update && sudo apt-get install -y unzip
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
