@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "s3myhotstar2024" # Replace with your actual S3 bucket name
+    bucket = "myhotstarbucket" # Replace with your actual S3 bucket name
     key    = "EKS/terraform.tfstate"
-    region = "ap-south-1"
+    region = "us-east-1"
   }
 }
